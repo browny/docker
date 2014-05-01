@@ -1,0 +1,51 @@
+FROM ubuntu:latest
+
+RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get upgrade -y
+
+# === Update ===
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get -y install software-properties-common python-software-properties
+RUN add-apt-repository ppa:webupd8team/java
+RUN apt-get update && apt-get -y upgrade
+
+# === Set locale ===
+RUN locale-gen --no-purge zh_TW.UTF-8
+ENV LANG zh_TW.UTF-8
+ENV LANGUAGE zh_TW.UTF-8
+ENV LC_ALL zh_TW.UTF-8
+
+# === Java7 ===
+ENV JAVA_HOME /usr/lib/jvm/java-7-oracle
+
+# Automatically accept oracle license
+RUN echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+
+RUN apt-get -y install oracle-java7-installer && apt-get clean
+RUN update-alternatives --display java
+RUN echo "JAVA_HOME=$JAVA_HOME" >> /etc/environment
+
+# === Tomcat6 ===
+RUN apt-get install -y tomcat6 tomcat6-admin
+RUN sed -i "s#</tomcat-users>##g" /etc/tomcat6/tomcat-users.xml; \
+    echo '<role rolename="manager"/>' >> /etc/tomcat6/tomcat-users.xml; \
+    echo '<role rolename="admin"/>' >> /etc/tomcat6/tomcat-users.xml; \
+    echo '<user username="admin" password="admin" roles="admin,manager"/>' >> /etc/tomcat6/tomcat-users.xml; \
+    echo '</tomcat-users>' >> /etc/tomcat6/tomcat-users.xml
+
+ENV JAVA_HEAP_SIZE 512
+ENV JAVE_PERM_SIZE 512
+
+RUN sed -i "s|#JAVA_HOME=.*|JAVA_HOME=$JAVA_HOME|g" /etc/default/tomcat6
+RUN sed -i "s|-Xmx128m|-Xmx${JAVA_HEAP_SIZE}m -XX:PermSize=256m -XX:MaxPermSize=${JAVE_PERM_SIZE}m|g" /etc/default/tomcat6
+
+RUN sudo ln -s /var/lib/tomcat6/* /usr/share/tomcat6/
+
+# === Deploy the war ===
+ADD war/WAR_FILE /var/lib/tomcat6/webapps/
+
+EXPOSE 22
+EXPOSE 8080
+
+CMD sudo service tomcat6 start && sudo tail -f /var/lib/tomcat6/logs/catalina.out
