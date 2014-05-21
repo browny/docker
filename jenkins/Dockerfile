@@ -1,8 +1,10 @@
-FROM ubuntu:precise
+FROM dockerfile/ubuntu
 
-RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get upgrade -y
+# === Set locale ===
+RUN locale-gen --no-purge zh_TW.UTF-8
+ENV LANG zh_TW.UTF-8
+ENV LANGUAGE zh_TW.UTF-8
+ENV LC_ALL zh_TW.UTF-8
 
 # === Jenkins ===
 RUN apt-get install -q -y openjdk-7-jre-headless && apt-get clean
