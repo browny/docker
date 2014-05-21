@@ -44,8 +44,9 @@ RUN cp -R /root/solr-4.8.0/example/solr/* /opt/solr
 RUN cp /root/solr-4.8.0/dist/solr-4.8.0.war /opt/solr/solr.war
 RUN cp /root/solr-4.8.0/dist/solrj-lib/* /usr/share/tomcat6/lib/
 RUN cp /root/solr-4.8.0/example/resources/log4j.properties /usr/share/tomcat6/conf/
+RUN chown -R tomcat6 /opt/solr/
 
-RUN cat "JAVA_OPTIONS=\"-Dsolr.solr.home=/opt/solr $JAVA_OPTIONS\"" >> /etc/default/tomcat6
+RUN echo "JAVA_OPTIONS=\"-Dsolr.solr.home=/opt/solr $JAVA_OPTIONS\"" >> /etc/default/tomcat6
 
 RUN echo "<Context docBase=\"/opt/solr/solr.war\" debug=\"0\" crossContext=\"true\"> <Environment name=\"solr/home\" type=\"java.lang.String\" value=\"/opt/solr\" override=\"true\" /> </Context>" > /usr/share/tomcat6/conf/Catalina/localhost/solr.xml
 
@@ -55,4 +56,4 @@ RUN echo "<Context docBase=\"/opt/solr/solr.war\" debug=\"0\" crossContext=\"tru
 EXPOSE 22
 EXPOSE 8080
 
-# CMD sudo service tomcat6 start && sudo tail -f /var/lib/tomcat6/logs/catalina.out
+CMD sudo service tomcat6 start && sudo tail -f /var/lib/tomcat6/logs/catalina.out

@@ -14,4 +14,4 @@ fi
 sh -c "docker build -t solr ."
 
 # Run a docker container with the image
-sh -c "docker run -t -i -p 8080:8080 solr /bin/bash"
+sh -c "docker run -t -i -p 8080:8080 solr"
