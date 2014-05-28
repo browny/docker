@@ -1,4 +1,4 @@
-FROM dockerfile/ubuntu
+FROM phusion/baseimage:0.9.10
 
 # === Set locale ===
 RUN locale-gen --no-purge zh_TW.UTF-8
@@ -7,7 +7,8 @@ ENV LANGUAGE zh_TW.UTF-8
 ENV LC_ALL zh_TW.UTF-8
 
 # === Update ===
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python-software-properties
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y upgrade
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common python-software-properties
 RUN add-apt-repository ppa:webupd8team/java
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y upgrade
 

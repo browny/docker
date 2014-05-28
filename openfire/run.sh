@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Ex: sh run.sh [docker_image_name]
+# Ex: sh run.sh browny/openfire
 # Usage: Access http://localhost:9090
 
 DOCKER_IMAGE_NAME=$1

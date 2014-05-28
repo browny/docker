@@ -1,4 +1,4 @@
-FROM dockerfile/ubuntu
+FROM phusion/baseimage:0.9.10
 
 # === Set locale ===
 RUN locale-gen --no-purge zh_TW.UTF-8
