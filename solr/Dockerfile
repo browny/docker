@@ -12,6 +12,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
 RUN add-apt-repository ppa:webupd8team/java
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y upgrade
 
+# === SSH server ===
+RUN apt-get install -y openssh-server
+RUN echo 'root:root' |chpasswd
+
 # === Java7 ===
 ENV JAVA_HOME /usr/lib/jvm/java-7-oracle
 
@@ -51,10 +55,11 @@ RUN echo "JAVA_OPTIONS=\"-Dsolr.solr.home=/opt/solr $JAVA_OPTIONS\"" >> /etc/def
 
 RUN echo "<Context docBase=\"/opt/solr/solr.war\" debug=\"0\" crossContext=\"true\"> <Environment name=\"solr/home\" type=\"java.lang.String\" value=\"/opt/solr\" override=\"true\" /> </Context>" > /usr/share/tomcat6/conf/Catalina/localhost/solr.xml
 
-# === Deploy the war ===
-#ADD war/WAR_FILE /var/lib/tomcat6/webapps/
 
 EXPOSE 22
 EXPOSE 8080
 
-CMD sudo service tomcat6 start && sudo tail -f /var/lib/tomcat6/logs/catalina.out
+ADD ./init.sh /opt/init.sh
+RUN chmod 777 /opt/init.sh
+
+ENTRYPOINT ["/opt/init.sh"]
