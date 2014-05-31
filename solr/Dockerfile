@@ -55,11 +55,11 @@ RUN echo "JAVA_OPTIONS=\"-Dsolr.solr.home=/opt/solr $JAVA_OPTIONS\"" >> /etc/def
 
 RUN echo "<Context docBase=\"/opt/solr/solr.war\" debug=\"0\" crossContext=\"true\"> <Environment name=\"solr/home\" type=\"java.lang.String\" value=\"/opt/solr\" override=\"true\" /> </Context>" > /usr/share/tomcat6/conf/Catalina/localhost/solr.xml
 
+# === Startup ====
+ADD ./init.sh /opt/init.sh
+RUN chmod 777 /opt/init.sh
 
 EXPOSE 22
 EXPOSE 8080
-
-ADD ./init.sh /opt/init.sh
-RUN chmod 777 /opt/init.sh
 
 ENTRYPOINT ["/opt/init.sh"]

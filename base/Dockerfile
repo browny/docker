@@ -15,10 +15,11 @@ RUN apt-get -y install software-properties-common python-software-properties
 RUN apt-get install -y openssh-server
 RUN echo 'root:root' |chpasswd
 
-EXPOSE 22
-EXPOSE 8080
 
+# === Startup ===
 ADD ./init.sh /opt/init.sh
 RUN chmod 777 /opt/init.sh
+
+EXPOSE 22
 
 ENTRYPOINT ["/opt/init.sh"]

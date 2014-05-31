@@ -20,10 +20,11 @@ RUN apt-get install -y python-dev python-imaging
 RUN easy_install pip
 RUN pip install thumbor
 
-EXPOSE 22
-EXPOSE 8888
-
+# === Startup ===
 ADD ./init.sh /opt/init.sh
 RUN chmod 777 /opt/init.sh
+
+EXPOSE 22
+EXPOSE 8888
 
 ENTRYPOINT ["/opt/init.sh"]

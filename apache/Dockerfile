@@ -18,10 +18,11 @@ RUN echo 'root:root' |chpasswd
 RUN apt-get install -y apache2
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-EXPOSE 22
-EXPOSE 80
-
+# === Startup ===
 ADD ./init.sh /opt/init.sh
 RUN chmod 777 /opt/init.sh
+
+EXPOSE 22
+EXPOSE 80
 
 ENTRYPOINT ["/opt/init.sh"]
