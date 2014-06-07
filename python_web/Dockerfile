@@ -7,23 +7,27 @@ ENV LANGUAGE zh_TW.UTF-8
 ENV LC_ALL zh_TW.UTF-8
 
 # === Update ===
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y upgrade
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common python-software-properties
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get -y install software-properties-common python-software-properties
+
+# === Python Web ===
+RUN apt-get install -y python-setuptools
+RUN easy_install pip
+RUN pip install Flask
+
+RUN mkdir /opt/python_web
+ADD hello.py /opt/python_web/
 
 # === SSH server ===
 RUN apt-get install -y openssh-server
 RUN echo 'root:root' |chpasswd
-
-# === Apache server ===
-RUN apt-get install -y apache2 libapache2-mod-proxy-html libxml2-dev
-
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # === Startup ===
 ADD ./init.sh /opt/init.sh
 RUN chmod 777 /opt/init.sh
 
 EXPOSE 22
-EXPOSE 80
+EXPOSE 5000
 
 ENTRYPOINT ["/opt/init.sh"]
