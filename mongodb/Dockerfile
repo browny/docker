@@ -22,9 +22,9 @@ RUN \
   echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list && \
   apt-get update && \
   apt-get install -y mongodb-org && \
-  mkdir -p /usr/local/mongodb-data
+  mkdir -p /data/db/
 
-RUN chmod 777 /usr/local/mongodb-data
+RUN chmod 777 /data/db/
 
 # Expose ports.
 #   - 27017: process
